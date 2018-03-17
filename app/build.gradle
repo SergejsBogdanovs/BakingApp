@@ -9,6 +9,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_ENDPOINT", '"https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/"'
+
     }
     buildTypes {
         release {
@@ -16,10 +19,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     // Support
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:recyclerview-v7:$support_version"
@@ -59,7 +72,6 @@ dependencies {
 
     // Stetho
     compile 'com.facebook.stetho:stetho:1.5.0'
-
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "com.android.support.test:runner:$support_test_version"
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
