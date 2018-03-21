@@ -2,23 +2,39 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="lv.st.sbogdano.bakingapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".AppDelegate"
         android:allowBackup="true"
         android:icon="@mipmap/cookbook"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/cookbook"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.recipes.RecipesActivity"
+        <activity
+            android:name=".ui.recipes.RecipesActivity"
             android:theme="@style/amber_deep_purple">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.recipedetail.RecipeDetailsActivity"
+            android:parentActivityName=".ui.recipes.RecipesActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.recipes.RecipesActivity" />
+        </activity>
+
+        <activity android:name=".ui.recipedetail.video.StepVideoActivity"
+            android:parentActivityName=".ui.recipedetail.RecipeDetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.recipedetail.RecipeDetailsActivity" />
         </activity>
     </application>
 

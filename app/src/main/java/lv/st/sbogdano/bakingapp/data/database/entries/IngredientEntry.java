@@ -14,7 +14,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 onDelete = CASCADE))
 public class IngredientEntry {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private Float quantity;
     private String measure;

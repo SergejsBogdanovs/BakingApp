@@ -12,14 +12,14 @@ import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
  */
 public class ActivityUtils {
 
-    public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,
+    public static void replaceFragmentToActivity(@NonNull FragmentManager fragmentManager,
                                              @NonNull Fragment fragment,
                                              int frameId) {
 
         checkNotNull(fragmentManager);
         checkNotNull(fragment);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(frameId, fragment);
+        transaction.replace(frameId, fragment);
         transaction.commit();
     }
 }

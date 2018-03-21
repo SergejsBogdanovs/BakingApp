@@ -17,8 +17,15 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
     private List<RecipeEntry> mRecipes;
 
-    public RecipesAdapter(List<RecipeEntry> recipes) {
+    private final RecipesAdapterOnItemClickHandler mClickHandler;
+
+    public interface RecipesAdapterOnItemClickHandler {
+        void onItemClick(RecipeEntry recipeEntry);
+    }
+
+    public RecipesAdapter(List<RecipeEntry> recipes, RecipesAdapterOnItemClickHandler clickHandler) {
         mRecipes = recipes;
+        mClickHandler = clickHandler;
     }
 
     @Override
@@ -46,7 +53,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.recipe_name)
         TextView mRecipeName;
@@ -57,6 +64,13 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            RecipeEntry recipeEntry = mRecipes.get(getAdapterPosition());
+            mClickHandler.onItemClick(recipeEntry);
         }
     }
 }

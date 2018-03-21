@@ -2,9 +2,11 @@ package lv.st.sbogdano.bakingapp.data.database.entries;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "recipes")
-public class RecipeEntry {
+public class RecipeEntry implements Parcelable{
 
     @PrimaryKey
     private Integer id;
@@ -52,5 +54,38 @@ public class RecipeEntry {
     public void setImage(String image) {
         this.image = image;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeValue(this.servings);
+        dest.writeString(this.image);
+    }
+
+    protected RecipeEntry(Parcel in) {
+        this.id = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.name = in.readString();
+        this.servings = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.image = in.readString();
+    }
+
+    public static final Creator<RecipeEntry> CREATOR = new Creator<RecipeEntry>() {
+        @Override
+        public RecipeEntry createFromParcel(Parcel source) {
+            return new RecipeEntry(source);
+        }
+
+        @Override
+        public RecipeEntry[] newArray(int size) {
+            return new RecipeEntry[size];
+        }
+    };
 }
 

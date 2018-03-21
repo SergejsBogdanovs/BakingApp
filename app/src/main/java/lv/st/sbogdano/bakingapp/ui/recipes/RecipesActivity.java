@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
+import lv.st.sbogdano.bakingapp.ViewModelFactory;
 import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipesActivity extends AppCompatActivity {
@@ -30,11 +31,12 @@ public class RecipesActivity extends AppCompatActivity {
         setupViewFragment();
 
         mRecipesViewModel = obtainViewModel(this);
+
     }
 
     public static RecipesViewModel obtainViewModel(FragmentActivity activity) {
-        RecipesViewModelFactory viewModelFactory
-                = RecipesViewModelFactory.getInstance(activity.getApplication());
+        ViewModelFactory viewModelFactory
+                = ViewModelFactory.getInstance(activity.getApplication());
 
         return ViewModelProviders.of(activity, viewModelFactory).get(RecipesViewModel.class);
     }
@@ -45,7 +47,7 @@ public class RecipesActivity extends AppCompatActivity {
         if (recipesFragment == null) {
             // Create the fragment
             recipesFragment = RecipesFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(
+            ActivityUtils.replaceFragmentToActivity(
                     getSupportFragmentManager(), recipesFragment, R.id.contentFrame);
         }
     }

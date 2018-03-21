@@ -1,11 +1,11 @@
 package lv.st.sbogdano.bakingapp.ui.recipes;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.RecipeDetailsActivity;
 
-public class RecipesFragment extends Fragment {
+public class RecipesFragment extends Fragment
+        implements RecipesAdapter.RecipesAdapterOnItemClickHandler{
 
     public static final String TAG = RecipesFragment.class.getName();
 
@@ -47,6 +48,7 @@ public class RecipesFragment extends Fragment {
     ProgressBar mLoadingIndicator;
 
     Unbinder unbinder;
+
     private RecipesViewModel mRecipesViewModel;
     private RecipesAdapter mRecipesAdapter;
 
@@ -66,8 +68,6 @@ public class RecipesFragment extends Fragment {
 
         mRecipesViewModel = RecipesActivity.obtainViewModel(getActivity());
 
-        setHasOptionsMenu(true);
-
         mRecipesViewModel.start();
 
         return view;
@@ -85,7 +85,7 @@ public class RecipesFragment extends Fragment {
     private void setupRecipesAdapter() {
         mRecipesRecyclerView.setHasFixedSize(true);
         mRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecipesAdapter = new RecipesAdapter(new ArrayList<>());
+        mRecipesAdapter = new RecipesAdapter(new ArrayList<>(), this);
         mRecipesRecyclerView.setAdapter(mRecipesAdapter);
     }
 
@@ -101,7 +101,6 @@ public class RecipesFragment extends Fragment {
                         }
                         break;
                     case ERROR:
-                        Log.v(TAG, "subscribeDataStream: " + listResource.message );
                         showErrorMessage();
                         break;
                     case LOADING:
@@ -110,7 +109,6 @@ public class RecipesFragment extends Fragment {
             }
         });
     }
-
 
     private void showRecipesInUI(List<RecipeEntry> data) {
         showLoading(false);
@@ -131,8 +129,16 @@ public class RecipesFragment extends Fragment {
     }
 
     @Override
+    public void onItemClick(RecipeEntry recipeEntry) {
+        Intent intent = new Intent(getContext(), RecipeDetailsActivity.class);
+        intent.putExtra(RecipeDetailsActivity.EXTRA_RECIPE, recipeEntry);
+        startActivity(intent);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
+
 }

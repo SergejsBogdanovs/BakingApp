@@ -1,4 +1,4 @@
-package lv.st.sbogdano.bakingapp.ui.recipes;
+package lv.st.sbogdano.bakingapp;
 
 import android.app.Application;
 import android.arch.lifecycle.ViewModel;
@@ -6,24 +6,23 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import lv.st.sbogdano.bakingapp.data.RecipesRepository;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.RecipeDetailsViewModel;
+import lv.st.sbogdano.bakingapp.ui.recipes.RecipesViewModel;
 import lv.st.sbogdano.bakingapp.util.InjectorUtils;
 
-/**
- * Factory method that allows us to create a ViewModel with a constructor that takes a
- * {@link lv.st.sbogdano.bakingapp.data.RecipesRepository}
- */
-public class RecipesViewModelFactory extends ViewModelProvider.NewInstanceFactory{
 
-    private static volatile RecipesViewModelFactory INSTANCE;
+public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+
+    private static volatile ViewModelFactory INSTANCE;
     private final Application mApplication;
 
     private final RecipesRepository mRecipesRepository;
 
-    public static RecipesViewModelFactory getInstance(Application application) {
+    public static ViewModelFactory getInstance(Application application) {
         if (INSTANCE == null) {
-            synchronized (RecipesViewModelFactory.class) {
+            synchronized (ViewModelFactory.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new RecipesViewModelFactory(
+                    INSTANCE = new ViewModelFactory(
                             application,
                             InjectorUtils.provideRecipesRepository(application.getApplicationContext()));
                 }
@@ -32,7 +31,7 @@ public class RecipesViewModelFactory extends ViewModelProvider.NewInstanceFactor
         return INSTANCE;
     }
 
-    public RecipesViewModelFactory(Application application, RecipesRepository recipesRepository) {
+    public ViewModelFactory(Application application, RecipesRepository recipesRepository) {
         this.mRecipesRepository = recipesRepository;
         this.mApplication = application;
     }
@@ -42,6 +41,8 @@ public class RecipesViewModelFactory extends ViewModelProvider.NewInstanceFactor
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(RecipesViewModel.class)) {
             return (T) new RecipesViewModel(mApplication, mRecipesRepository);
+        } else if (modelClass.isAssignableFrom(RecipeDetailsViewModel.class)) {
+            return (T) new RecipeDetailsViewModel(mApplication, mRecipesRepository);
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }

@@ -20,6 +20,7 @@ public class RecipesViewModel extends ViewModel{
     private LiveData<Resource<List<RecipeEntry>>> mRecipes;
     private final Context mContext;
 
+
     public RecipesViewModel(Application context, RecipesRepository recipesRepository) {
         mContext = context;
         mRecipesRepository = recipesRepository;
@@ -41,4 +42,5 @@ public class RecipesViewModel extends ViewModel{
     public LiveData<Resource<List<RecipeEntry>>> getRecipes() {
         return mRecipes;
     }
+
 }

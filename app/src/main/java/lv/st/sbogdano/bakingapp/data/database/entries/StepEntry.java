@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -12,9 +14,9 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 parentColumns = "id",
                 childColumns = "recipeId",
                 onDelete = CASCADE))
-public class StepEntry {
+public class StepEntry implements Parcelable{
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
     private Integer stepId;
     private String shortDescription;
@@ -100,4 +102,42 @@ public class StepEntry {
         this.recipeId = recipeId;
     }
 
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeValue(this.stepId);
+        dest.writeString(this.shortDescription);
+        dest.writeString(this.description);
+        dest.writeString(this.videoURL);
+        dest.writeString(this.thumbnailURL);
+        dest.writeInt(this.recipeId);
+    }
+
+    protected StepEntry(Parcel in) {
+        this.id = in.readInt();
+        this.stepId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.shortDescription = in.readString();
+        this.description = in.readString();
+        this.videoURL = in.readString();
+        this.thumbnailURL = in.readString();
+        this.recipeId = in.readInt();
+    }
+
+    public static final Creator<StepEntry> CREATOR = new Creator<StepEntry>() {
+        @Override
+        public StepEntry createFromParcel(Parcel source) {
+            return new StepEntry(source);
+        }
+
+        @Override
+        public StepEntry[] newArray(int size) {
+            return new StepEntry[size];
+        }
+    };
 }

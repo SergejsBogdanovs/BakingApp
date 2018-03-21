@@ -17,8 +17,10 @@ import lv.st.sbogdano.bakingapp.data.database.dao.StepsDao;
 import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
+import lv.st.sbogdano.bakingapp.data.model.Ingredient;
 import lv.st.sbogdano.bakingapp.data.model.Recipe;
 import lv.st.sbogdano.bakingapp.AppExecutors;
+import lv.st.sbogdano.bakingapp.data.model.Step;
 import lv.st.sbogdano.bakingapp.util.RecipeTransformer;
 
 public class RecipesRepositoryImpl implements RecipesRepository {
@@ -63,7 +65,6 @@ public class RecipesRepositoryImpl implements RecipesRepository {
         return new NetworkBoundResource<List<RecipeEntry>, List<Recipe>>(mExecutors) {
             @Override
             protected void saveCallResult(@NonNull List<Recipe> item) {
-                Log.v(TAG, "saveCallResult: " + item.size());
                 List<RecipeEntry> recipeEntries = RecipeTransformer.transformRecipes(item);
                 mRecipesDao.insertAll(recipeEntries);
                 updateIngredientDb(item);
@@ -89,8 +90,62 @@ public class RecipesRepositoryImpl implements RecipesRepository {
         }.asLiveData();
     }
 
+    @Override
+    public LiveData<Resource<List<IngredientEntry>>> getIngredients(Integer recipeId) {
+        return new NetworkBoundResource<List<IngredientEntry>, List<Ingredient>>(mExecutors) {
+
+            @Override
+            protected void saveCallResult(@NonNull List<Ingredient> item) {
+
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<IngredientEntry> data) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<IngredientEntry>> loadFromDb() {
+                return mIngredientsDao.getIngredientsForRecipe(recipeId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<List<Ingredient>>> createCall() {
+                return null;
+            }
+        }.asLiveData();
+    }
+
+    @Override
+    public LiveData<Resource<List<StepEntry>>> getSteps(Integer recipeId) {
+        return new NetworkBoundResource<List<StepEntry>, List<Step>>(mExecutors) {
+            @Override
+            protected void saveCallResult(@NonNull List<Step> item) {
+
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable List<StepEntry> data) {
+                return false;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<List<StepEntry>> loadFromDb() {
+                return mStepsDao.getStepsForRecipe(recipeId);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<List<Step>>> createCall() {
+                return null;
+            }
+        }.asLiveData();
+    }
+
     private void updateStepDb(List<Recipe> item) {
-        Log.v(TAG, "updateStepDb: " + item.size());
         List<StepEntry> stepEntries = RecipeTransformer.transformSteps(item);
         mStepsDao.insertAll(stepEntries);
     }

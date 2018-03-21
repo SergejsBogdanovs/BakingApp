@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">BakingApp</string>
+    <string name="app_name">Baking Recipes</string>
     <string name="loading_error">Can not load data.</string>
     <string name="serving_label">Servings:</string>
+    <string name="ingredients">Ingredients</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
