@@ -22,13 +22,7 @@ import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
-import lv.st.sbogdano.bakingapp.ui.recipedetail.video.StepVideoActivity;
-import lv.st.sbogdano.bakingapp.ui.recipes.RecipesAdapter;
-import lv.st.sbogdano.bakingapp.ui.recipes.RecipesViewModel;
-
-import static lv.st.sbogdano.bakingapp.data.Status.ERROR;
-import static lv.st.sbogdano.bakingapp.data.Status.LOADING;
-import static lv.st.sbogdano.bakingapp.data.Status.SUCCESS;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.video.RecipeStepActivity;
 
 public class RecipeDetailsFragment extends Fragment implements StepsAdapter.StepsAdapterOnItemClickHandler {
 
@@ -153,10 +147,10 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
 
     @Override
     public void onStepItemClick(int position) {
-        Intent intent = new Intent(getActivity(), StepVideoActivity.class);
+        Intent intent = new Intent(getActivity(), RecipeStepActivity.class);
         intent.putParcelableArrayListExtra(
-                StepVideoActivity.EXTRA_STEPS, (ArrayList<? extends Parcelable>) mStepEntries);
-        intent.putExtra(StepVideoActivity.EXTRA_POSITION, position);
+                RecipeStepActivity.EXTRA_STEPS, (ArrayList<? extends Parcelable>) mStepEntries);
+        intent.putExtra(RecipeStepActivity.EXTRA_POSITION, position);
         startActivity(intent);
     }
 }

@@ -10,35 +10,36 @@
         android:id="@+id/ingredient"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:textColor="@color/background_material_light"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/quantity"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Sugar" />
+        tools:text="SugarSugarSugarSugarSugarSugarSugarSugarSugarSugarSugarSugarSugarSugar" />
 
     <TextView
         android:id="@+id/quantity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/background_material_light"
         app:layout_constraintBottom_toBottomOf="@+id/ingredient"
-        app:layout_constraintStart_toEndOf="@+id/ingredient"
+        app:layout_constraintEnd_toStartOf="@+id/measure"
         app:layout_constraintTop_toTopOf="@+id/ingredient"
         tools:text="250" />
 
     <TextView
         android:id="@+id/measure"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
         android:textColor="@color/background_material_light"
         app:layout_constraintBottom_toBottomOf="@+id/quantity"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/quantity"
         app:layout_constraintTop_toTopOf="@+id/quantity"
         tools:text="G" />
 

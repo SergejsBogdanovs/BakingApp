@@ -30,8 +30,10 @@
                 android:value=".ui.recipes.RecipesActivity" />
         </activity>
 
-        <activity android:name=".ui.recipedetail.video.StepVideoActivity"
-            android:parentActivityName=".ui.recipedetail.RecipeDetailsActivity">
+        <activity
+            android:name=".ui.recipedetail.video.RecipeStepActivity"
+            android:parentActivityName=".ui.recipedetail.RecipeDetailsActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.recipedetail.RecipeDetailsActivity" />

@@ -1,10 +1,7 @@
 package lv.st.sbogdano.bakingapp.ui.recipedetail.video;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,55 +14,54 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.RecipeDetailsFragment;
+import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
-public class StepVideoActivity extends AppCompatActivity {
+public class RecipeStepActivity extends AppCompatActivity {
 
     public static final String EXTRA_STEPS = "STEPS";
     public static final String EXTRA_POSITION = "POSITION";
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.view_pager)
-    ViewPager mViewPager;
 
     private List<StepEntry> mStepEntries;
+    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_step_video);
+        setContentView(R.layout.activity_recipe_step);
         ButterKnife.bind(this);
 
         mStepEntries = getIntent().getParcelableArrayListExtra(EXTRA_STEPS);
-        int position = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        mPosition = getIntent().getIntExtra(EXTRA_POSITION, 0);
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
-        ab.setTitle(mStepEntries.get(position).getShortDescription());
+        ab.setTitle(mStepEntries.get(mPosition).getShortDescription());
 
-        SmartFragmentStatePagerAdapter fragmentPagerAdapter
-                = new StepVideoPagerAdapter(getSupportFragmentManager(), mStepEntries);
-        mViewPager.setAdapter(fragmentPagerAdapter);
-        mViewPager.setCurrentItem(position);
+        if (savedInstanceState == null) {
+            RecipeStepPagerFragment recipeStepPagerFragment = findOrCreateViewFragment();
 
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            ActivityUtils.replaceFragmentToActivity(
+                    getSupportFragmentManager(),
+                    recipeStepPagerFragment,
+                    R.id.contentFrame);
+        }
+    }
 
-            }
+    private RecipeStepPagerFragment findOrCreateViewFragment() {
+        RecipeStepPagerFragment recipeStepPagerFragment = (RecipeStepPagerFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.contentFrame);
 
-            @Override
-            public void onPageSelected(int position) {
-                ab.setTitle(mStepEntries.get(position).getShortDescription());
-            }
+        if (recipeStepPagerFragment == null) {
+            recipeStepPagerFragment = RecipeStepPagerFragment.newInstance(mStepEntries, mPosition);
+        }
+        return recipeStepPagerFragment;
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
     @Override
