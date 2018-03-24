@@ -8,27 +8,33 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.ViewModelFactory;
+import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
+import lv.st.sbogdano.bakingapp.data.model.Ingredient;
 import lv.st.sbogdano.bakingapp.data.model.Recipe;
+import lv.st.sbogdano.bakingapp.ui.widget.RecipeWidgetManager;
 import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsFragment.OnIngredientDataPass{
 
     public static final String EXTRA_RECIPE = "RECIPE";
     public static final String KEY_TITLE = "TITLE";
-    public static final String TAG = RecipeDetailsActivity.class.getSimpleName();
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    private RecipeDetailsViewModel mRecipeViewModel;
     private RecipeEntry mRecipeEntry;
-
+    private List<IngredientEntry> mIngredientEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +46,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             mRecipeEntry = getIntent().getParcelableExtra(EXTRA_RECIPE);
         }
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_TITLE)) {
-            mRecipeEntry = savedInstanceState.getParcelable(KEY_TITLE);
-        }
-
         setupToolbar();
 
         RecipeDetailsFragment recipeDetailsFragment = findOrCreateViewFragment();
@@ -52,8 +54,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 getSupportFragmentManager(),
                 recipeDetailsFragment,
                 R.id.contentFrame);
-
-        mRecipeViewModel = obtainViewModel(this);
     }
 
     public static RecipeDetailsViewModel obtainViewModel(FragmentActivity activity) {
@@ -62,7 +62,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     }
 
     private RecipeDetailsFragment findOrCreateViewFragment() {
-
 
         RecipeDetailsFragment recipeDetailsFragment = (RecipeDetailsFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
@@ -79,5 +78,30 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setDisplayShowHomeEnabled(true);
         ab.setTitle(mRecipeEntry.getName());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.widget, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_add_to_widget:
+                RecipeWidgetManager recipeWidgetManager = new RecipeWidgetManager();
+                recipeWidgetManager.updateRecipeWidget(mRecipeEntry, mIngredientEntries);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDataPass(List<IngredientEntry> ingredientEntries) {
+        mIngredientEntries = new ArrayList<>();
+        mIngredientEntries.addAll(ingredientEntries);
     }
 }

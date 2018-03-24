@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="lv.st.sbogdano.bakingapp.ui.recipedetail.video.RecipeStepFragment">
+    tools:context="lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepFragment">
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/exo_player_view"

@@ -1,8 +1,6 @@
-package lv.st.sbogdano.bakingapp.ui.recipedetail.video;
+package lv.st.sbogdano.bakingapp.ui.recipedetail.step;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +12,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
-import lv.st.sbogdano.bakingapp.ui.recipedetail.RecipeDetailsFragment;
 import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipeStepActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package lv.st.sbogdano.bakingapp.ui.recipedetail.video;
+package lv.st.sbogdano.bakingapp.ui.recipedetail.step;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

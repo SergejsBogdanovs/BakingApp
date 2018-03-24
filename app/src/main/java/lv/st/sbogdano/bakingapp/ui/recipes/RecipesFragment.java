@@ -76,9 +76,7 @@ public class RecipesFragment extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         setupRecipesAdapter();
-
         subscribeDataStream();
     }
 

@@ -1,5 +1,6 @@
 package lv.st.sbogdano.bakingapp.ui.recipedetail;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -22,7 +23,7 @@ import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
-import lv.st.sbogdano.bakingapp.ui.recipedetail.video.RecipeStepActivity;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepActivity;
 
 public class RecipeDetailsFragment extends Fragment implements StepsAdapter.StepsAdapterOnItemClickHandler {
 
@@ -45,9 +46,14 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
     private StepsAdapter mStepsAdapter;
 
     private List<StepEntry> mStepEntries = new ArrayList<>();
+    private OnIngredientDataPass mOnIngredientDataPass;
 
     public RecipeDetailsFragment() {
 
+    }
+
+    public interface OnIngredientDataPass {
+        void onDataPass(List<IngredientEntry> ingredientEntries);
     }
 
     public static RecipeDetailsFragment newInstance(RecipeEntry recipeEntry) {
@@ -80,7 +86,12 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
         setupStepsAdapter();
 
         subscribeDataStream();
+    }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mOnIngredientDataPass = (OnIngredientDataPass) context;
     }
 
     private void setupIngredientsAdapter() {
@@ -105,6 +116,7 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
                     case SUCCESS:
                         if (listResource.data != null) {
                             showIngredientsInUI(listResource.data);
+                            mOnIngredientDataPass.onDataPass(listResource.data);
                         }
                 }
             }
