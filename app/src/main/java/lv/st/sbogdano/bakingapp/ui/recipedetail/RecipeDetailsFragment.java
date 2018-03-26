@@ -24,6 +24,8 @@ import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepActivity;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepPagerFragment;
+import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipeDetailsFragment extends Fragment implements StepsAdapter.StepsAdapterOnItemClickHandler {
 
@@ -39,6 +41,8 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
     RecyclerView mStepsRecyclerView;
 
     Unbinder unbinder;
+
+    private boolean mTwoPane = false;
 
     private RecipeEntry mRecipeEntry;
     private RecipeDetailsViewModel mDetailsViewModel;
@@ -70,6 +74,10 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
 
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         unbinder = ButterKnife.bind(this, view);
+
+        if (view.findViewById(R.id.recipe_detail_container) != null) {
+            mTwoPane = true;
+        }
 
         mDetailsViewModel = RecipeDetailsActivity.obtainViewModel(getActivity());
 
@@ -143,14 +151,6 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
         mStepEntries.addAll(data);
     }
 
-    private void showLoading(boolean b) {
-
-    }
-
-    private void showErrorMessage() {
-
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -159,10 +159,20 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
 
     @Override
     public void onStepItemClick(int position) {
-        Intent intent = new Intent(getActivity(), RecipeStepActivity.class);
-        intent.putParcelableArrayListExtra(
-                RecipeStepActivity.EXTRA_STEPS, (ArrayList<? extends Parcelable>) mStepEntries);
-        intent.putExtra(RecipeStepActivity.EXTRA_POSITION, position);
-        startActivity(intent);
+        if (mTwoPane) {
+            RecipeStepPagerFragment stepPagerFragment
+                    = RecipeStepPagerFragment.newInstance(mStepEntries, position);
+            ActivityUtils.replaceFragmentToActivity(
+                    getActivity().getSupportFragmentManager(),
+                    stepPagerFragment,
+                    R.id.recipe_detail_container
+            );
+        } else {
+            Intent intent = new Intent(getActivity(), RecipeStepActivity.class);
+            intent.putParcelableArrayListExtra(
+                    RecipeStepActivity.EXTRA_STEPS, (ArrayList<? extends Parcelable>) mStepEntries);
+            intent.putExtra(RecipeStepActivity.EXTRA_POSITION, position);
+            startActivity(intent);
+        }
     }
 }

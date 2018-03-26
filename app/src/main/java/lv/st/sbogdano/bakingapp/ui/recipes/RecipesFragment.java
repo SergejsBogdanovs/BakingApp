@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -82,7 +83,8 @@ public class RecipesFragment extends Fragment
 
     private void setupRecipesAdapter() {
         mRecipesRecyclerView.setHasFixedSize(true);
-        mRecipesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        int gridColumnsNumber = getResources().getInteger(R.integer.grid_column_number);
+        mRecipesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridColumnsNumber));
         mRecipesAdapter = new RecipesAdapter(new ArrayList<>(), this);
         mRecipesRecyclerView.setAdapter(mRecipesAdapter);
     }

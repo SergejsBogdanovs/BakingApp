@@ -43,7 +43,6 @@ import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListener {
 
     private static final String ARGUMENT_STEP = "STEP";
-    private static final String TAG = RecipeStepFragment.class.getSimpleName();
 
     @BindView(R.id.exo_player_view)
     SimpleExoPlayerView mExoPlayerView;
