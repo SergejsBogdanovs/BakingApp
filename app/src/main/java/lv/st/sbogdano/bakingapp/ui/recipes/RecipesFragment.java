@@ -28,8 +28,6 @@ import lv.st.sbogdano.bakingapp.ui.recipedetail.RecipeDetailsActivity;
 public class RecipesFragment extends Fragment
         implements RecipesAdapter.RecipesAdapterOnItemClickHandler{
 
-    public static final String TAG = RecipesFragment.class.getName();
-
     @BindView(R.id.recipes_recycler_view)
     RecyclerView mRecipesRecyclerView;
 
