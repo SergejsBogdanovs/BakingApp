@@ -23,10 +23,12 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -40,7 +42,7 @@ import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListener {
+public class RecipeStepFragment extends Fragment {
 
     private static final String ARGUMENT_STEP = "STEP";
 
@@ -96,163 +98,194 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
     }
 
     private void initializePlayer() {
-        initializeMediaSession();
-        if (mPlayer == null) {
-            TrackSelector trackSelector = new DefaultTrackSelector();
-            mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
-            mExoPlayerView.setPlayer(mPlayer);
-            mPlayer.addListener(this);
+        DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        AdaptiveTrackSelection.Factory videoTrackSelectionFactory
+                = new AdaptiveTrackSelection.Factory(bandwidthMeter);
 
-            String userAgent = Util.getUserAgent(getContext(), "StepVideoFragment");
-            Uri uri = Uri.parse(mStepEntry.getVideoURL());
-            MediaSource mediaSource = new ExtractorMediaSource(uri,
-                    new DefaultDataSourceFactory(getContext(), userAgent),
-                    new DefaultExtractorsFactory(),
-                    null,
-                    null);
-            mPlayer.prepare(mediaSource);
-            mPlayer.setPlayWhenReady(false);
-        }
-    }
+        DefaultTrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
-    private void initializeMediaSession() {
-        mMediaSession = new MediaSessionCompat(getContext(), this.getClass().getSimpleName());
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mMediaSession.setMediaButtonReceiver(null);
-        mStateBuilder = new PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PAUSE |
-                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
-                        PlaybackStateCompat.ACTION_PLAY_PAUSE);
-        mMediaSession.setPlaybackState(mStateBuilder.build());
-        mMediaSession.setCallback(new MediaSessionCompat.Callback() {
-            @Override
-            public void onPlay() {
-                mPlayer.setPlayWhenReady(true);
-            }
+        mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
+        mExoPlayerView.setPlayer(mPlayer);
 
-            @Override
-            public void onPause() {
-                mPlayer.setPlayWhenReady(false);
-            }
+        Uri videoUri = Uri.parse(mStepEntry.getVideoURL());
 
-            @Override
-            public void onSkipToPrevious() {
-                mPlayer.seekTo(0);
-            }
-        });
-        mMediaSession.setActive(true);
-    }
+        DefaultBandwidthMeter bandwidthMeterA = new DefaultBandwidthMeter();
 
+        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(
+                getContext(), "StepVideoFragment", bandwidthMeterA);
+        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
+        ExtractorMediaSource videoSource = new ExtractorMediaSource(videoUri,
+                dataSourceFactory, extractorsFactory, null, null);
+        mPlayer.prepare(videoSource);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        hideSystemUi();
-        if ((Util.SDK_INT <= 23 || mPlayer == null)) {
-            initializePlayer();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        releasePlayer();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
-    }
-
-    @SuppressLint("InlinedApi")
-    private void hideSystemUi() {
-        mExoPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
-
-    private void releasePlayer() {
+    public void onDestroy() {
+        super.onDestroy();
         if (mPlayer != null) {
-            mPlayer.stop();
             mPlayer.release();
-            mPlayer = null;
-        }
-
-        if (mMediaSession != null) {
-            mMediaSession.setActive(false);
         }
     }
 
+    //    private void initializePlayer() {
+//        initializeMediaSession();
+//        if (mPlayer == null) {
+//            TrackSelector trackSelector = new DefaultTrackSelector();
+//            mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
+//            mExoPlayerView.setPlayer(mPlayer);
+//            mPlayer.addListener(this);
+//
+//            String userAgent = Util.getUserAgent(getContext(), "StepVideoFragment");
+//            Uri uri = Uri.parse(mStepEntry.getVideoURL());
+//            MediaSource mediaSource = new ExtractorMediaSource(uri,
+//                    new DefaultDataSourceFactory(getContext(), userAgent),
+//                    new DefaultExtractorsFactory(),
+//                    null,
+//                    null);
+//            mPlayer.prepare(mediaSource);
+//            mPlayer.setPlayWhenReady(false);
+//        }
+//    }
 
-    @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+//    private void initializeMediaSession() {
+//        mMediaSession = new MediaSessionCompat(getContext(), this.getClass().getSimpleName());
+//        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+//                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+//        mMediaSession.setMediaButtonReceiver(null);
+//        mStateBuilder = new PlaybackStateCompat.Builder()
+//                .setActions(PlaybackStateCompat.ACTION_PLAY | PlaybackStateCompat.ACTION_PAUSE |
+//                        PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+//                        PlaybackStateCompat.ACTION_PLAY_PAUSE);
+//        mMediaSession.setPlaybackState(mStateBuilder.build());
+//        mMediaSession.setCallback(new MediaSessionCompat.Callback() {
+//            @Override
+//            public void onPlay() {
+//                mPlayer.setPlayWhenReady(true);
+//            }
+//
+//            @Override
+//            public void onPause() {
+//                mPlayer.setPlayWhenReady(false);
+//            }
+//
+//            @Override
+//            public void onSkipToPrevious() {
+//                mPlayer.seekTo(0);
+//            }
+//        });
+//        mMediaSession.setActive(true);
+//    }
 
-    }
 
-    @Override
-    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        if (Util.SDK_INT > 23) {
+//            initializePlayer();
+//        }
+//    }
+//
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        hideSystemUi();
+//        if ((Util.SDK_INT <= 23 || mPlayer == null)) {
+//            initializePlayer();
+//        }
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        releasePlayer();
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        if (Util.SDK_INT > 23) {
+//            releasePlayer();
+//        }
+//    }
 
-    }
+//    @SuppressLint("InlinedApi")
+//    private void hideSystemUi() {
+//        mExoPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//    }
+//
+//    private void releasePlayer() {
+//        if (mPlayer != null) {
+//            mPlayer.stop();
+//            mPlayer.release();
+//            mPlayer = null;
+//        }
+//
+//        if (mMediaSession != null) {
+//            mMediaSession.setActive(false);
+//        }
+//    }
 
-    @Override
-    public void onLoadingChanged(boolean isLoading) {
 
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mPlayer.getCurrentPosition(), 1f);
-        } else if ((playbackState == ExoPlayer.STATE_READY)) {
-            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mPlayer.getCurrentPosition(), 1f);
-        }
-        mMediaSession.setPlaybackState(mStateBuilder.build());
-    }
-
-    @Override
-    public void onRepeatModeChanged(int repeatMode) {
-
-    }
-
-    @Override
-    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-
-    }
-
-    @Override
-    public void onPlayerError(ExoPlaybackException error) {
-
-    }
-
-    @Override
-    public void onPositionDiscontinuity(int reason) {
-
-    }
-
-    @Override
-    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-    }
-
-    @Override
-    public void onSeekProcessed() {
-
-    }
+//    @Override
+//    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+//
+//    }
+//
+//    @Override
+//    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+//
+//    }
+//
+//    @Override
+//    public void onLoadingChanged(boolean isLoading) {
+//
+//    }
+//
+//    @Override
+//    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+//        if ((playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
+//            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mPlayer.getCurrentPosition(), 1f);
+//        } else if ((playbackState == ExoPlayer.STATE_READY)) {
+//            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED, mPlayer.getCurrentPosition(), 1f);
+//        }
+//        mMediaSession.setPlaybackState(mStateBuilder.build());
+//    }
+//
+//    @Override
+//    public void onRepeatModeChanged(int repeatMode) {
+//
+//    }
+//
+//    @Override
+//    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+//
+//    }
+//
+//    @Override
+//    public void onPlayerError(ExoPlaybackException error) {
+//
+//    }
+//
+//    @Override
+//    public void onPositionDiscontinuity(int reason) {
+//
+//    }
+//
+//    @Override
+//    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+//
+//    }
+//
+//    @Override
+//    public void onSeekProcessed() {
+//
+//    }
 
     @Override
     public void onDestroyView() {
