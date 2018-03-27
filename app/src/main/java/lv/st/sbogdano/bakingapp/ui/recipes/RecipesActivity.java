@@ -17,8 +17,6 @@ public class RecipesActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    private RecipesViewModel mRecipesViewModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +27,6 @@ public class RecipesActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
 
         setupViewFragment();
-
-        mRecipesViewModel = obtainViewModel(this);
-
     }
 
     public static RecipesViewModel obtainViewModel(FragmentActivity activity) {

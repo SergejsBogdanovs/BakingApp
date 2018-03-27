@@ -43,5 +43,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/short_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/short_description"
-        app:srcCompat="@drawable/menu_right" />
+        app:srcCompat="@drawable/menu_right"
+        android:contentDescription="@string/cd_step_image" />
 </android.support.constraint.ConstraintLayout>

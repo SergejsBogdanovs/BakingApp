@@ -2,15 +2,12 @@ package lv.st.sbogdano.bakingapp.ui.recipedetail;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,17 +18,12 @@ import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.ViewModelFactory;
 import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
-import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
-import lv.st.sbogdano.bakingapp.data.model.Ingredient;
-import lv.st.sbogdano.bakingapp.data.model.Recipe;
-import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepPagerFragment;
 import lv.st.sbogdano.bakingapp.ui.widget.RecipeWidgetManager;
 import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDetailsFragment.OnIngredientDataPass{
 
     public static final String EXTRA_RECIPE = "RECIPE";
-    private static final String TAG = RecipeDetailsActivity.class.getSimpleName();
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -78,9 +70,11 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     private void setupToolbar() {
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setTitle(mRecipeEntry.getName());
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
+            ab.setTitle(mRecipeEntry.getName());
+        }
     }
 
     @Override
@@ -94,8 +88,6 @@ public class RecipeDetailsActivity extends AppCompatActivity implements RecipeDe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_to_widget:
-                Toast.makeText(this, mRecipeEntry.getName() + " " + mIngredientEntries.size(), Toast.LENGTH_SHORT).show();
-                Log.v(TAG, "onOptionsItemSelected: "+ mRecipeEntry.getName() + " " + mIngredientEntries.size());
                 RecipeWidgetManager recipeWidgetManager = new RecipeWidgetManager();
                 recipeWidgetManager.updateRecipeWidget(mRecipeEntry, mIngredientEntries);
                 return true;

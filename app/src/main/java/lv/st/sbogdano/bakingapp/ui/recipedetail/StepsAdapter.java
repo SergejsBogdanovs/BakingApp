@@ -11,10 +11,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
-import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
-import lv.st.sbogdano.bakingapp.data.model.Step;
-import lv.st.sbogdano.bakingapp.ui.recipes.RecipesAdapter;
 
 class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
 
@@ -63,7 +60,7 @@ class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.ViewHolder>{
         @BindView(R.id.short_description)
         TextView mShortDescription;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             ButterKnife.bind(this, itemView);

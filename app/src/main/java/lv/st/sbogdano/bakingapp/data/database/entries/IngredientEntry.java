@@ -1,17 +1,10 @@
 package lv.st.sbogdano.bakingapp.data.database.entries;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
-import static android.arch.persistence.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "ingredients",
-        foreignKeys = @ForeignKey(entity = RecipeEntry.class,
-                parentColumns = "id",
-                childColumns = "recipeId",
-                onDelete = CASCADE))
+@Entity(tableName = "ingredients")
 public class IngredientEntry {
 
     @PrimaryKey(autoGenerate = true)

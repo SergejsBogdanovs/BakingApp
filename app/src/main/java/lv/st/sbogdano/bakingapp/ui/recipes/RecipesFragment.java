@@ -2,10 +2,12 @@ package lv.st.sbogdano.bakingapp.ui.recipes;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
+import lv.st.sbogdano.bakingapp.idling.SimpleIdlingResource;
 import lv.st.sbogdano.bakingapp.ui.recipedetail.RecipeDetailsActivity;
 
 public class RecipesFragment extends Fragment
@@ -51,6 +54,11 @@ public class RecipesFragment extends Fragment
     private RecipesViewModel mRecipesViewModel;
     private RecipesAdapter mRecipesAdapter;
 
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private static SimpleIdlingResource mIdlingResource;
+
+
     public RecipesFragment() {
     }
 
@@ -60,7 +68,7 @@ public class RecipesFragment extends Fragment
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -68,6 +76,9 @@ public class RecipesFragment extends Fragment
         mRecipesViewModel = RecipesActivity.obtainViewModel(getActivity());
 
         mRecipesViewModel.start();
+
+        // Get the IdlingResource instance
+        getIdlingResource();
 
         return view;
     }
@@ -88,6 +99,10 @@ public class RecipesFragment extends Fragment
     }
 
     private void subscribeDataStream() {
+        // For testing
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(false);
+        }
         mRecipesViewModel.getRecipes().observe(getActivity(), listResource -> {
             if (listResource != null) {
                 switch (listResource.status) {
@@ -111,6 +126,11 @@ public class RecipesFragment extends Fragment
     private void showRecipesInUI(List<RecipeEntry> data) {
         showLoading(false);
         mRecipesAdapter.setRecipes(data);
+
+        // For testing
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(true);
+        }
     }
 
     private void showErrorMessage() {
@@ -139,4 +159,15 @@ public class RecipesFragment extends Fragment
         unbinder.unbind();
     }
 
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public static IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
 }

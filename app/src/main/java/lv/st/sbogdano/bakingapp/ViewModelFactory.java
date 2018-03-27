@@ -14,7 +14,6 @@ import lv.st.sbogdano.bakingapp.util.InjectorUtils;
 public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private static volatile ViewModelFactory INSTANCE;
-    private final Application mApplication;
 
     private final RecipesRepository mRecipesRepository;
 
@@ -23,7 +22,6 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
             synchronized (ViewModelFactory.class) {
                 if (INSTANCE == null) {
                     INSTANCE = new ViewModelFactory(
-                            application,
                             InjectorUtils.provideRecipesRepository(application.getApplicationContext()));
                 }
             }
@@ -31,18 +29,17 @@ public class ViewModelFactory extends ViewModelProvider.NewInstanceFactory {
         return INSTANCE;
     }
 
-    public ViewModelFactory(Application application, RecipesRepository recipesRepository) {
+    private ViewModelFactory(RecipesRepository recipesRepository) {
         this.mRecipesRepository = recipesRepository;
-        this.mApplication = application;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(RecipesViewModel.class)) {
-            return (T) new RecipesViewModel(mApplication, mRecipesRepository);
+            return (T) new RecipesViewModel(mRecipesRepository);
         } else if (modelClass.isAssignableFrom(RecipeDetailsViewModel.class)) {
-            return (T) new RecipeDetailsViewModel(mApplication, mRecipesRepository);
+            return (T) new RecipeDetailsViewModel(mRecipesRepository);
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
         }

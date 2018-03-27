@@ -1,19 +1,12 @@
 package lv.st.sbogdano.bakingapp.data.database.entries;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import static android.arch.persistence.room.ForeignKey.CASCADE;
-
-@Entity(tableName = "steps",
-        foreignKeys = @ForeignKey(entity = RecipeEntry.class,
-                parentColumns = "id",
-                childColumns = "recipeId",
-                onDelete = CASCADE))
+@Entity(tableName = "steps")
 public class StepEntry implements Parcelable{
 
     @PrimaryKey(autoGenerate = true)

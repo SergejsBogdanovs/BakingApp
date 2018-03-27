@@ -9,7 +9,6 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
-import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 
 @Dao
 public interface IngredientsDao {

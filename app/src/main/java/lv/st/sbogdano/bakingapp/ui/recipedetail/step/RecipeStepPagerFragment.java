@@ -45,8 +45,10 @@ public class RecipeStepPagerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mStepEntries = getArguments().getParcelableArrayList(ARGUMENT_STEPS);
-        mPagerPosition = getArguments().getInt(ARGUMENT_POSITION);
+        if (getArguments() != null) {
+            mStepEntries = getArguments().getParcelableArrayList(ARGUMENT_STEPS);
+            mPagerPosition = getArguments().getInt(ARGUMENT_POSITION);
+        }
     }
 
     @Nullable
@@ -92,7 +94,7 @@ public class RecipeStepPagerFragment extends Fragment {
 
     class StepPager extends SmartFragmentStatePagerAdapter {
 
-        public StepPager(FragmentManager fm) {
+        StepPager(FragmentManager fm) {
             super(fm);
         }
 

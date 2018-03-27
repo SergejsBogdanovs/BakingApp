@@ -1,9 +1,7 @@
 package lv.st.sbogdano.bakingapp.ui.recipes;
 
-import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
 
 import java.util.List;
 
@@ -18,11 +16,9 @@ public class RecipesViewModel extends ViewModel{
 
     private final RecipesRepository mRecipesRepository;
     private LiveData<Resource<List<RecipeEntry>>> mRecipes;
-    private final Context mContext;
 
 
-    public RecipesViewModel(Application context, RecipesRepository recipesRepository) {
-        mContext = context;
+    public RecipesViewModel(RecipesRepository recipesRepository) {
         mRecipesRepository = recipesRepository;
     }
 

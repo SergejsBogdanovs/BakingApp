@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.0'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -17,9 +17,8 @@ buildscript {
 
 ext.arch_version = "1.1.1"
 ext.room_version = "1.0.0"
-ext.support_version = "26.1.0"
+ext.support_version = "27.1.0"
 ext.constraint_layout_version = "1.0.2"
-ext.firebase_jobdispatcher_version = "0.8.5"
 ext.junit_version = "4.12"
 ext.support_test_version = "1.0.1"
 ext.retrofit_version = "2.3.0"
@@ -29,6 +28,7 @@ ext.rxandroid_version = '2.0.1'
 ext.butter_knife_version = '8.8.1'
 ext.picasso_version = '2.5.2'
 ext.exoPlayer_version = '2.7.1'
+ext.espresso_version = "3.0.1"
 
 
 allprojects {

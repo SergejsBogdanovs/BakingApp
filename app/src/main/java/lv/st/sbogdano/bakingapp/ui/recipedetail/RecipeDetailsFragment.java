@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +30,7 @@ import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipeDetailsFragment extends Fragment implements StepsAdapter.StepsAdapterOnItemClickHandler {
 
-    public static final String ARGUMENT_RECIPE = "RECIPE";
+    private static final String ARGUMENT_RECIPE = "RECIPE";
 
     @BindView(R.id.ingredients_label)
     TextView mIngredientsLabel;
@@ -70,7 +71,7 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_recipe_details, container, false);
         unbinder = ButterKnife.bind(this, view);
@@ -88,7 +89,9 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mRecipeEntry = getArguments().getParcelable(ARGUMENT_RECIPE);
+        if (getArguments() != null) {
+            mRecipeEntry = getArguments().getParcelable(ARGUMENT_RECIPE);
+        }
 
         setupIngredientsAdapter();
         setupStepsAdapter();
@@ -165,8 +168,7 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
             ActivityUtils.replaceFragmentToActivity(
                     getActivity().getSupportFragmentManager(),
                     stepPagerFragment,
-                    R.id.recipe_detail_container
-            );
+                    R.id.recipe_detail_container);
         } else {
             Intent intent = new Intent(getActivity(), RecipeStepActivity.class);
             intent.putParcelableArrayListExtra(

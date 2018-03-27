@@ -2,8 +2,6 @@ package lv.st.sbogdano.bakingapp;
 
 import android.app.Application;
 
-import com.facebook.stetho.Stetho;
-
 public class AppDelegate extends Application {
 
 
@@ -14,7 +12,7 @@ public class AppDelegate extends Application {
         super.onCreate();
         sInstance = this;
 
-        Stetho.initializeWithDefaults(this);
+        //Stetho.initializeWithDefaults(this);
     }
 
     public static AppDelegate getsInstance() {

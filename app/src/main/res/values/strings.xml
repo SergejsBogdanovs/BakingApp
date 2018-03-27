@@ -4,7 +4,10 @@
     <string name="serving_label">Servings:</string>
     <string name="ingredients">Ingredients</string>
     <string name="add_to_widget">Add to widget</string>
-    <string name="appwidget_text">EXAMPLE</string>
-    <string name="add_widget">Add widget</string>
     <string name="ingredient_quantity_text">%1$s %2$s</string>
+
+    <!-- Content description -->
+    <string name="cd_no_recipe_icon">No recipe icon</string>
+    <string name="cd_recipe_icon">Recipe Icon</string>
+    <string name="cd_step_image">Step image</string>
 </resources>

@@ -36,9 +36,11 @@ public class RecipeStepActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setDisplayShowHomeEnabled(true);
-        ab.setTitle(mStepEntries.get(mPosition).getShortDescription());
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
+            ab.setTitle(mStepEntries.get(mPosition).getShortDescription());
+        }
 
         if (savedInstanceState == null) {
             RecipeStepPagerFragment recipeStepPagerFragment = findOrCreateViewFragment();

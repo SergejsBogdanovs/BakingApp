@@ -19,7 +19,7 @@ public abstract class RecipesDatabase extends RoomDatabase{
 
     // For Singleton instantiation
     private static final Object LOCK = new Object();
-    protected static RecipesDatabase sInstance;
+    private static RecipesDatabase sInstance;
 
     public static RecipesDatabase getInstance(Context context) {
         if (sInstance == null) {

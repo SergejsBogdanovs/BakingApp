@@ -12,9 +12,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
-import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
-import lv.st.sbogdano.bakingapp.data.model.Ingredient;
-import lv.st.sbogdano.bakingapp.ui.recipes.RecipesAdapter;
 
 class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHolder>{
 
@@ -60,7 +57,7 @@ class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.ViewHol
         @BindView(R.id.quantity)
         TextView mQuantity;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

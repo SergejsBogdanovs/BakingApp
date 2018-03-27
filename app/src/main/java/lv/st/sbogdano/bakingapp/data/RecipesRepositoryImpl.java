@@ -3,11 +3,10 @@ package lv.st.sbogdano.bakingapp.data;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 
+import lv.st.sbogdano.bakingapp.AppExecutors;
 import lv.st.sbogdano.bakingapp.data.api.ApiResponse;
 import lv.st.sbogdano.bakingapp.data.api.RecipesService;
 import lv.st.sbogdano.bakingapp.data.api.ServiceGenerator;
@@ -19,7 +18,6 @@ import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 import lv.st.sbogdano.bakingapp.data.model.Ingredient;
 import lv.st.sbogdano.bakingapp.data.model.Recipe;
-import lv.st.sbogdano.bakingapp.AppExecutors;
 import lv.st.sbogdano.bakingapp.data.model.Step;
 import lv.st.sbogdano.bakingapp.util.RecipeTransformer;
 
@@ -73,7 +71,7 @@ public class RecipesRepositoryImpl implements RecipesRepository {
 
             @Override
             protected boolean shouldFetch(@Nullable List<RecipeEntry> data) {
-                return data.isEmpty() || forceUpdate;
+                return data == null || data.isEmpty() || forceUpdate;
             }
 
             @NonNull

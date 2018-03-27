@@ -40,7 +40,7 @@
                         android:text="@string/ingredients"
                         android:textAllCaps="true"
                         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:textColor="@color/background_material_light"
+                        android:textColor="@color/background_light"
                         android:textStyle="bold" />
 
                     <android.support.v7.widget.RecyclerView

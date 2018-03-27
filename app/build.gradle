@@ -1,27 +1,23 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "lv.st.sbogdano.bakingapp"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "API_ENDPOINT", '"https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/"'
-
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    dataBinding {
-        enabled = true
     }
 
     compileOptions {
@@ -43,7 +39,6 @@ dependencies {
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$arch_version"
     implementation "android.arch.lifecycle:runtime:$arch_version"
-    annotationProcessor "android.arch.lifecycle:compiler:$arch_version"
 
     // Java8 support for Lifecycles
     implementation "android.arch.lifecycle:common-java8:$arch_version"
@@ -76,9 +71,20 @@ dependencies {
     //Picasso
     implementation "com.squareup.picasso:picasso:$picasso_version"
 
-    // Stetho
-    compile 'com.facebook.stetho:stetho:1.5.0'
+//    // Stetho
+//    implementation 'com.facebook.stetho:stetho:1.5.0'
+
+    // Idling
+    implementation "com.android.support.test.espresso:espresso-idling-resource:$espresso_version"
+
+
+    // Testing
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "com.android.support.test:runner:$support_test_version"
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$espresso_version"
+    // Force usage of dependencies in the test app, since it is internally used by the runner module.
+    androidTestImplementation "com.android.support:support-annotations:$support_version"
+    androidTestImplementation "com.android.support:recyclerview-v7:$support_version"
+
 }

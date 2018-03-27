@@ -26,7 +26,8 @@
             android:layout_marginTop="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/cookbook" />
+            app:srcCompat="@mipmap/cookbook"
+            android:contentDescription="@string/cd_recipe_icon" />
 
         <TextView
             android:id="@+id/recipe_name"

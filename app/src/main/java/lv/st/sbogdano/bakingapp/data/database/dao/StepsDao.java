@@ -8,15 +8,10 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
-import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 
 @Dao
 public interface StepsDao {
-
-    @Query("SELECT * FROM steps")
-    LiveData<List<StepEntry>> getSteps();
 
     @Query("SELECT * FROM steps WHERE recipeId = :recipeId")
     LiveData<List<StepEntry>> getStepsForRecipe(int recipeId);
