@@ -112,15 +112,6 @@ public class RecipeStepFragment extends Fragment {
                 Util.getUserAgent(getContext(), "BakingApp"),
                 defaultBandwidthMeter);
 
-        //DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
-//        ExtractorMediaSource videoSource = new ExtractorMediaSource(
-//                videoUri,
-//                dataSourceFactory,
-//                extractorsFactory,
-//                null,
-//                null);
-
         MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(videoUri);
 
