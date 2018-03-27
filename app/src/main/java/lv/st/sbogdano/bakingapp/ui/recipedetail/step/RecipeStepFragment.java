@@ -106,7 +106,6 @@ public class RecipeStepFragment extends Fragment {
         Uri videoUri = Uri.parse(mStepEntry.getVideoURL());
 
         DefaultBandwidthMeter defaultBandwidthMeter = new DefaultBandwidthMeter();
-
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                 getContext(),
                 Util.getUserAgent(getContext(), "BakingApp"),
