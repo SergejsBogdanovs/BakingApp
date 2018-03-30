@@ -31,7 +31,9 @@
         app:layout_constraintEnd_toStartOf="@+id/step_image"
         app:layout_constraintStart_toEndOf="@+id/step_id"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Recipe Introduction" />
+        tools:text="Recipe Introduction"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="16dp" />
 
     <ImageView
         android:id="@+id/step_image"
@@ -44,5 +46,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/short_description"
         app:srcCompat="@drawable/menu_right"
-        android:contentDescription="@string/cd_step_image" />
+        android:contentDescription="@string/cd_step_image"
+        android:layout_marginRight="8dp" />
 </android.support.constraint.ConstraintLayout>

@@ -14,7 +14,18 @@
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/exo_player_view"
             android:layout_width="match_parent"
-            android:layout_height="250dp" />
+            android:layout_height="250dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/step_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/cookbook"
+            android:visibility="gone"
+            tools:ignore="ContentDescription"  />
 
         <TextView
             android:id="@+id/description"

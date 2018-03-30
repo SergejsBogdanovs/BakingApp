@@ -1,18 +1,20 @@
 package lv.st.sbogdano.bakingapp.ui.recipedetail.step;
 
 
-import android.annotation.SuppressLint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.exoplayer2.C;
+import com.bumptech.glide.Glide;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
@@ -34,6 +36,8 @@ import butterknife.Unbinder;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 
+import static com.google.android.exoplayer2.ExoPlayerLibraryInfo.TAG;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,20 +46,25 @@ public class RecipeStepFragment extends Fragment {
 
     private static final String ARGUMENT_STEP = "STEP";
 
+    private static final String BUNDLE_POSITION = "POSITION";
+    private static final String BUNDLE_PLAY_WHEN_READY = "READY";
+
     @BindView(R.id.exo_player_view)
     PlayerView mExoPlayerView;
 
     @BindView(R.id.description)
     TextView mDescription;
 
+    @BindView(R.id.step_image)
+    ImageView mStepImage;
+
     Unbinder unbinder;
 
     private SimpleExoPlayer mPlayer;
     private StepEntry mStepEntry;
 
-    private long mPlayerPosition;
-    private boolean mPlayWhenReady = false;
-    private int mCurrentWindow;
+    private long mPlayerPosition = 0;
+    private boolean mPlayWhenReady = true;
 
 
     public static RecipeStepFragment newInstance(StepEntry stepEntry) {
@@ -77,67 +86,72 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_recipe_step, container, false);
         unbinder = ButterKnife.bind(this, view);
-        return view;
-    }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            mPlayerPosition = savedInstanceState.getLong(BUNDLE_POSITION);
+            mPlayWhenReady = savedInstanceState.getBoolean(BUNDLE_PLAY_WHEN_READY);
+        }
 
+        Log.v(TAG, "onCreateView: " + mStepEntry.getDescription());
         // Set description
         mDescription.setText(mStepEntry.getDescription());
 
-        // Set ExoPlayer if video exist
-        if (mStepEntry.getVideoURL() == null || mStepEntry.getVideoURL().isEmpty()) {
-            mExoPlayerView.setVisibility(View.GONE);
-        } else {
-            initializePlayer();
+        if (!mStepEntry.getThumbnailURL().isEmpty()) {
+            Glide.with(this)
+                    .load(mStepEntry.getThumbnailURL())
+                    .into(mStepImage);
+            mStepImage.setVisibility(View.VISIBLE);
         }
+
+        return view;
     }
+
 
     private void initializePlayer() {
+        if (mPlayer == null) {
 
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            Uri videoUri = Uri.parse(mStepEntry.getVideoURL());
 
-        TrackSelection.Factory videoTrackSelectionFactory
-                = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveTrackSelection.Factory(bandwidthMeter);
+            TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
-        TrackSelector trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+            mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
+            mExoPlayerView.setPlayer(mPlayer);
 
-        mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
-        mExoPlayerView.setPlayer(mPlayer);
+            DefaultBandwidthMeter defaultBandwidthMeter = new DefaultBandwidthMeter();
+            DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
+                    getContext(),
+                    Util.getUserAgent(getContext(), "BakingApp"),
+                    defaultBandwidthMeter);
 
-        Uri videoUri = Uri.parse(mStepEntry.getVideoURL());
+            MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                    .createMediaSource(videoUri);
+            mPlayer.prepare(videoSource);
 
-        DefaultBandwidthMeter defaultBandwidthMeter = new DefaultBandwidthMeter();
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
-                getContext(),
-                Util.getUserAgent(getContext(), "BakingApp"),
-                defaultBandwidthMeter);
+            if (mPlayerPosition != 0) {
+                mPlayer.seekTo(mPlayerPosition);
+            }
 
-        MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(videoUri);
-
-        mPlayer.setPlayWhenReady(mPlayWhenReady);
-        mPlayer.seekTo(mCurrentWindow, mPlayerPosition);
-        mPlayer.prepare(videoSource, false, false);
+            mPlayer.setPlayWhenReady(mPlayWhenReady);
+            mExoPlayerView.setVisibility(View.VISIBLE);
+        }
     }
 
-
     @Override
-    public void onStart() {
-        super.onStart();
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(BUNDLE_POSITION, mPlayerPosition);
+        outState.putBoolean(BUNDLE_PLAY_WHEN_READY, mPlayWhenReady);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if ((Util.SDK_INT <= 23 || mPlayer == null)) {
+        if (!TextUtils.isEmpty(mStepEntry.getVideoURL())) {
             initializePlayer();
         }
     }
@@ -145,35 +159,16 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        hideSystemUi();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
+        releasePlayer();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
-    }
-
-    @SuppressLint("InlinedApi")
-    private void hideSystemUi() {
-        mExoPlayerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
 
     private void releasePlayer() {
         if (mPlayer != null) {
             mPlayerPosition = mPlayer.getCurrentPosition();
-            mCurrentWindow = mPlayer.getCurrentWindowIndex();
             mPlayWhenReady = mPlayer.getPlayWhenReady();
+
+            mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
         }

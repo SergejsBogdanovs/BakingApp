@@ -1,6 +1,7 @@
 package lv.st.sbogdano.bakingapp.ui.recipedetail.step;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,7 +13,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import lv.st.sbogdano.bakingapp.R;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
-import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipeStepActivity extends AppCompatActivity {
 
@@ -21,9 +21,10 @@ public class RecipeStepActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.pager)
+    ViewPager mPager;
 
     private List<StepEntry> mStepEntries;
-    private int mPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,34 +33,39 @@ public class RecipeStepActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mStepEntries = getIntent().getParcelableArrayListExtra(EXTRA_STEPS);
-        mPosition = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        int position = getIntent().getIntExtra(EXTRA_POSITION, 0);
 
         setSupportActionBar(mToolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setDisplayShowHomeEnabled(true);
-            ab.setTitle(mStepEntries.get(mPosition).getShortDescription());
+            ab.setTitle(mStepEntries.get(position).getShortDescription());
         }
 
-        if (savedInstanceState == null) {
-            RecipeStepPagerFragment recipeStepPagerFragment = findOrCreateViewFragment();
+        StepFragmentPagerAdapter adapter =
+                new StepFragmentPagerAdapter(getSupportFragmentManager(), mStepEntries);
+        mPager.setAdapter(adapter);
+        mPager.setCurrentItem(position);
 
-            ActivityUtils.replaceFragmentToActivity(
-                    getSupportFragmentManager(),
-                    recipeStepPagerFragment,
-                    R.id.contentFrame);
-        }
-    }
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    private RecipeStepPagerFragment findOrCreateViewFragment() {
-        RecipeStepPagerFragment recipeStepPagerFragment = (RecipeStepPagerFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.contentFrame);
+            }
 
-        if (recipeStepPagerFragment == null) {
-            recipeStepPagerFragment = RecipeStepPagerFragment.newInstance(mStepEntries, mPosition);
-        }
-        return recipeStepPagerFragment;
+            @Override
+            public void onPageSelected(int position) {
+                if (ab != null) {
+                    ab.setTitle(mStepEntries.get(position).getShortDescription());
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
     }
 

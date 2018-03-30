@@ -24,7 +24,6 @@
 
         <activity
             android:name=".ui.recipedetail.RecipeDetailsActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:parentActivityName=".ui.recipes.RecipesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -33,7 +32,6 @@
 
         <activity
             android:name=".ui.recipedetail.step.RecipeStepActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:parentActivityName=".ui.recipedetail.RecipeDetailsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

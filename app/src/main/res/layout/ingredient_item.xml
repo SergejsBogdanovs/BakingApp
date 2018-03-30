@@ -28,7 +28,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/ingredient"
         app:layout_constraintEnd_toStartOf="@+id/measure"
         app:layout_constraintTop_toTopOf="@+id/ingredient"
-        tools:text="250" />
+        tools:text="250"
+        android:layout_marginRight="8dp" />
 
     <TextView
         android:id="@+id/measure"
@@ -41,6 +42,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/quantity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/quantity"
-        tools:text="G" />
+        tools:text="G"
+        android:layout_marginRight="8dp" />
 
 </android.support.constraint.ConstraintLayout>

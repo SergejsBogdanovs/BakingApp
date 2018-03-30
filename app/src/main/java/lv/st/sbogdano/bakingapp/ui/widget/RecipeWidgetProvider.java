@@ -14,17 +14,21 @@ import lv.st.sbogdano.bakingapp.ui.widget.service.RecipeWidgetRemoteViewService;
  */
 public class RecipeWidgetProvider extends AppWidgetProvider {
 
+
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId, RecipeWidgetManager recipeWidgetManager) {
 
-        String widgetTitle = recipeWidgetManager.getRecipe().getName();
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
-        views.setTextViewText(R.id.widget_title, widgetTitle);
-        views.setRemoteAdapter(R.id.widget_list,
-                new Intent(context, RecipeWidgetRemoteViewService.class));
+        if (recipeWidgetManager.getRecipe() != null) {
+            String widgetTitle = recipeWidgetManager.getRecipe().getName();
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
+            views.setTextViewText(R.id.widget_title, widgetTitle);
+            views.setRemoteAdapter(R.id.widget_list,
+                    new Intent(context, RecipeWidgetRemoteViewService.class));
 
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(appWidgetId, views);
+        }
+
     }
 
     @Override

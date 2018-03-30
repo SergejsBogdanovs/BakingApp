@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -25,12 +26,13 @@ import lv.st.sbogdano.bakingapp.data.database.entries.IngredientEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 import lv.st.sbogdano.bakingapp.data.database.entries.StepEntry;
 import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepActivity;
-import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepPagerFragment;
+import lv.st.sbogdano.bakingapp.ui.recipedetail.step.RecipeStepFragment;
 import lv.st.sbogdano.bakingapp.util.ActivityUtils;
 
 public class RecipeDetailsFragment extends Fragment implements StepsAdapter.StepsAdapterOnItemClickHandler {
 
     private static final String ARGUMENT_RECIPE = "RECIPE";
+    private static final String BUNDLE_RECYCLER_LAYOUT = "recycler_layout_state";
 
     @BindView(R.id.ingredients_label)
     TextView mIngredientsLabel;
@@ -43,6 +45,9 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
 
     Unbinder unbinder;
 
+    @BindView(R.id.nested_scroll_view)
+    NestedScrollView mNestedScrollView;
+
     private boolean mTwoPane = false;
 
     private RecipeEntry mRecipeEntry;
@@ -52,6 +57,9 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
 
     private List<StepEntry> mStepEntries = new ArrayList<>();
     private OnIngredientDataPass mOnIngredientDataPass;
+
+    private static Bundle mBundleRecyclerViewState;
+    private Parcelable mState;
 
     public RecipeDetailsFragment() {
 
@@ -93,6 +101,13 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
             mRecipeEntry = getArguments().getParcelable(ARGUMENT_RECIPE);
         }
 
+        // Restore scroll position
+        if (savedInstanceState != null) {
+            final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
+            if(position != null)
+                mNestedScrollView.post(() -> mNestedScrollView.scrollTo(position[0], position[1]));
+        }
+
         setupIngredientsAdapter();
         setupStepsAdapter();
 
@@ -103,6 +118,15 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
     public void onAttach(Context context) {
         super.onAttach(context);
         mOnIngredientDataPass = (OnIngredientDataPass) context;
+    }
+
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Saving scroll position
+        outState.putIntArray("ARTICLE_SCROLL_POSITION",
+                new int[]{ mNestedScrollView.getScrollX(), mNestedScrollView.getScrollY()});
     }
 
     private void setupIngredientsAdapter() {
@@ -152,6 +176,7 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
     private void showStepsInUI(List<StepEntry> data) {
         mStepsAdapter.setSteps(data);
         mStepEntries.addAll(data);
+        //mStepsRecyclerView.getLayoutManager().onRestoreInstanceState(mState);
     }
 
     @Override
@@ -163,8 +188,8 @@ public class RecipeDetailsFragment extends Fragment implements StepsAdapter.Step
     @Override
     public void onStepItemClick(int position) {
         if (mTwoPane) {
-            RecipeStepPagerFragment stepPagerFragment
-                    = RecipeStepPagerFragment.newInstance(mStepEntries, position);
+            RecipeStepFragment stepPagerFragment
+                    = RecipeStepFragment.newInstance(mStepEntries.get(position));
             ActivityUtils.replaceFragmentToActivity(
                     getActivity().getSupportFragmentManager(),
                     stepPagerFragment,

@@ -94,7 +94,7 @@ public class RecipesFragment extends Fragment
         mRecipesRecyclerView.setHasFixedSize(true);
         int gridColumnsNumber = getResources().getInteger(R.integer.grid_column_number);
         mRecipesRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), gridColumnsNumber));
-        mRecipesAdapter = new RecipesAdapter(new ArrayList<>(), this);
+        mRecipesAdapter = new RecipesAdapter(getContext(), new ArrayList<>(), this);
         mRecipesRecyclerView.setAdapter(mRecipesAdapter);
     }
 

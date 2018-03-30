@@ -1,10 +1,15 @@
 package lv.st.sbogdano.bakingapp.ui.recipes;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -16,6 +21,7 @@ import lv.st.sbogdano.bakingapp.data.database.entries.RecipeEntry;
 public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHolder>{
 
     private List<RecipeEntry> mRecipes;
+    private Context mContext;
 
     private final RecipesAdapterOnItemClickHandler mClickHandler;
 
@@ -23,7 +29,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         void onItemClick(RecipeEntry recipeEntry);
     }
 
-    public RecipesAdapter(List<RecipeEntry> recipes, RecipesAdapterOnItemClickHandler clickHandler) {
+    public RecipesAdapter(Context context, List<RecipeEntry> recipes, RecipesAdapterOnItemClickHandler clickHandler) {
+        mContext = context;
         mRecipes = recipes;
         mClickHandler = clickHandler;
     }
@@ -40,6 +47,11 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
         RecipeEntry recipeEntry = mRecipes.get(position);
         holder.mRecipeName.setText(recipeEntry.getName());
         holder.mServings.setText(String.valueOf(recipeEntry.getServings()));
+        if (!TextUtils.isEmpty(recipeEntry.getImage())) {
+            Glide.with(mContext)
+                    .load(recipeEntry.getImage())
+                    .into(holder.mRecipeImage);
+        }
     }
 
     @Override
@@ -60,6 +72,9 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.ViewHold
 
         @BindView(R.id.servings)
         TextView mServings;
+
+        @BindView(R.id.recipe_image)
+        ImageView mRecipeImage;
 
         ViewHolder(View itemView) {
             super(itemView);
